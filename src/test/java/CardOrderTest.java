@@ -27,30 +27,29 @@ public class CardOrderTest {
         driver = new ChromeDriver(options);
         driver.get("http://localhost:9999");
     }
+        @AfterEach
+        public void tearDown () {
+            driver.quit();
+            driver = null;
+        }
 
-    @AfterEach
-    public void tearDown() {
-        driver.quit();
-        driver = null;
+        @Test
+        public void shouldSubmitForm() {
+            // Заполняем поле имени
+            driver.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys("Иван Петров-Сидоров");
+
+            // Заполняем поле телефона
+            driver.findElement(By.cssSelector("[data-test-id='phone'] input")).sendKeys("+79270000000");
+
+            // Кликаем по чекбоксу согласия (находим элемент с классом checkbox__box внутри блока agreement)
+            driver.findElement(By.cssSelector("[data-test-id='agreement'] .checkbox__box")).click();
+
+            // Отправляем форму
+            driver.findElement(By.cssSelector("button")).click();
+
+            // Проверяем, что появилось сообщение об успешной отправке
+            String expected = "Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.";
+            String actual = driver.findElement(By.cssSelector("[data-test-id='order-success']")).getText().trim();
+            assertEquals(expected, actual);
+        }
     }
-
-    @Test
-    public void shouldSubmitForm() {
-        // Заполняем поле имени
-        driver.findElement(By.cssSelector("[data-test-id='name'] input")).sendKeys("Иван Петров-Сидоров");
-
-        // Заполняем поле телефона
-        driver.findElement(By.cssSelector("[data-test-id='phone'] input")).sendKeys("+79270000000");
-
-        // Кликаем по чекбоксу согласия (находим элемент с классом checkbox__box внутри блока agreement)
-        driver.findElement(By.cssSelector("[data-test-id='agreement'] .checkbox__box")).click();
-
-        // Отправляем форму
-        driver.findElement(By.cssSelector("button")).click();
-
-        // Проверяем, что появилось сообщение об успешной отправке
-        String expected = "Ваша заявка успешно отправлена! Наш менеджер свяжется с вами в ближайшее время.";
-        String actual = driver.findElement(By.cssSelector("[data-test-id='order-success']")).getText().trim();
-        assertEquals(expected, actual);
-    }
-}
